@@ -43,9 +43,7 @@ library(feather)
 ```{r}
 channel_id <- "UC6CV_32l8omBfcliOOQnIew"
 
-# api_call_channel <- str_c("https://www.googleapis.com/youtube/v3/channels?key=",google_api_key,"&id=",channel_id,"&part=snippet,contentDetails,statistics")
-
-api_call_channel <- "https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&channelId=UC6CV_32l8omBfcliOOQnIew&key=AIzaSyCviXCt3rQPfDaNvuFIaWCE24gNx7q0Dfs&maxResults=50"
+api_call_channel <- str_c("https://www.googleapis.com/youtube/v3/channels?key=",google_api_key,"&id=",channel_id,"&part=snippet,contentDetails,statistics")
 
 api_result_channel <- httr::GET(api_call_channel)
 
@@ -53,6 +51,26 @@ json_result_channel <- httr::content(api_result_channel, "text", encoding="UTF-8
 
 # Process the raw data into a data frame
 json_channel <- jsonlite::fromJSON(json_result_channel, flatten = T)
+
+channel_info <- base::as.data.frame(json_channel) %>% 
+  janitor::clean_names()
+```
+
+## get_subscribed channels info using YouTube Data API - Real Time Data
+
+```{r}
+# api_call_channel <- "https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&channelId=UC6CV_32l8omBfcliOOQnIew&key=AIzaSyCviXCt3rQPfDaNvuFIaWCE24gNx7q0Dfs&maxResults=50"
+
+api_call_subscribed_channels <- str_c("https://youtube.googleapis.com/youtube/v3/subscriptions?key=",google_api_key,"&channelId=",channel_id,"&part=id,snippet,contentDetails,subscriberSnippet")
+
+# part=snippet%2CcontentDetails&channelId=UC6CV_32l8omBfcliOOQnIew&key=AIzaSyCviXCt3rQPfDaNvuFIaWCE24gNx7q0Dfs&maxResults=50"
+
+api_result_subscribed_channels <- httr::GET(api_call_subscribed_channels)
+
+json_result_subscribed_channels <- httr::content(api_result_subscribed_channels, "text", encoding="UTF-8")
+
+# Process the raw data into a data frame
+json_subscribed_channels <- jsonlite::fromJSON(json_result_subscribed_channels, flatten = T)
 
 channel_info <- base::as.data.frame(json_channel) %>% 
   janitor::clean_names()
