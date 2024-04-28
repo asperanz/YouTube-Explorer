@@ -1,9 +1,9 @@
 ---
 title: "YouTube Explorer"
-subtitle: "Real Time & Historical Data (with playlists)"
+subtitle: "Retrieve all my subscribed channels"
 author: "Alessandro Speranza"
 date: "31/03/2024"
-date-modified: "31/03/2024"
+date-modified: "28/04/2024"
 format: html
 toc: true
 editor: source
