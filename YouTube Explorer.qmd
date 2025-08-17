@@ -3,7 +3,7 @@ title: "YouTube Explorer"
 subtitle: "Retrieve all my subscribed channels"
 author: "Alessandro Speranza"
 date: "31/03/2024"
-date-modified: "28/04/2024"
+date-modified: "17/08/2025"
 format: html
 toc: true
 editor: source
