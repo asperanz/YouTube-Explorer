@@ -61,7 +61,9 @@ channel_info <- base::as.data.frame(json_channel) %>%
 ```{r}
 # api_call_channel <- "https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&channelId=UC6CV_32l8omBfcliOOQnIew&key=AIzaSyCviXCt3rQPfDaNvuFIaWCE24gNx7q0Dfs&maxResults=50"
 
-api_call_subscribed_channels <- str_c("https://youtube.googleapis.com/youtube/v3/subscriptions?key=",google_api_key,"&channelId=",channel_id,"&part=id,snippet,contentDetails,subscriberSnippet")
+# api_call_channel_videos_fp <- str_c("https://www.googleapis.com/youtube/v3/playlistItems?playlistId=", uploads, "&key=AIzaSyCviXCt3rQPfDaNvuFIaWCE24gNx7q0Dfs&part=snippet&maxResults=50")
+
+api_call_subscribed_channels <- str_c("https://youtube.googleapis.com/youtube/v3/subscriptions?key=",google_api_key,"&channelId=",channel_id,"&part=id,snippet,contentDetails,subscriberSnippet&maxResults=50")
 
 # part=snippet%2CcontentDetails&channelId=UC6CV_32l8omBfcliOOQnIew&key=AIzaSyCviXCt3rQPfDaNvuFIaWCE24gNx7q0Dfs&maxResults=50"
 
@@ -72,6 +74,33 @@ json_result_subscribed_channels <- httr::content(api_result_subscribed_channels,
 # Process the raw data into a data frame
 json_subscribed_channels <- jsonlite::fromJSON(json_result_subscribed_channels, flatten = T)
 
-channel_info <- base::as.data.frame(json_channel) %>% 
+subscribed_channels_info <- base::as.data.frame(json_subscribed_channels) %>% 
   janitor::clean_names()
 ```
+
+```{r}
+# Step 1: retrieve the nextPageToken from the first page 
+uploads <- subscribed_channels_info |>  
+  select(next_page_token) |> 
+  dplyr::distinct() |> 
+  dplyr::pull()
+
+# uploads key = "CDIQAA"
+ 
+# Step 2: retrieve the uploads key from channel data frame
+api_call_channel_videos_fp <- str_c("https://www.googleapis.com/youtube/v3/subscriptions?id=", uploads, "&key=AIzaSyCviXCt3rQPfDaNvuFIaWCE24gNx7q0Dfs&part=snippet&maxResults=50")
+
+api_result_channel_videos_fp <- httr::GET(api_call_channel_videos_fp)
+
+json_result_channel_videos_fp <- httr::content(api_result_channel_videos_fp, "text", encoding="UTF-8")
+
+# Process the raw data into a data frame
+json_channel_videos_fp <- jsonlite::fromJSON(json_result_channel_videos_fp, flatten = T)
+
+channel_videos <- as.data.frame(json_channel_videos_fp) %>% 
+  janitor::clean_names() 
+
+# Retrieve the first nextPageToken to pass to the function in order to retrieve all the other nextPageToken interactively
+nextPageToken <- json_channel_videos_fp[["nextPageToken"]]
+```
+
