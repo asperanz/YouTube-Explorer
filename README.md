@@ -1,2 +1,2 @@
-# YouTube Explorer - Flexdashboard
-Web application using a flexdashboard to explore interactively YouTube channels and videos
+# YouTube Explorer - Quarto Dashboard
+Web application using a Quarto Dashboard to explore interactively YouTube channels and videos
